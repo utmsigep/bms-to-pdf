@@ -1,0 +1,26 @@
+<h1 class="text-center my-5">BMS to PDF</h1>
+
+<div class="row">
+  <div class="col-md-6 mx-auto">
+    <div class="card card-default shadow">
+      <div class="card-body">
+        <p class="mb-3">Use the form below to take the <acronym title="Comma Separated Values">CSV</acronym> file exported from mySigEp's Balanced Man Scholarship tool to create a PDF of the applications, one per page.</p>
+        <hr />
+        <%= form_with url: upload_convert_path, method: :post, data: {turbo: false, remote: false} do |form| %>
+          <div class="form-file mb-4">
+            <%= form.label :csv, "CSV Export File", class: 'd-none' %>
+            <%= form.file_field :csv, class: 'form-control' %>
+            <div class="form-text">Select the exported CSV file from the BMS Tool.</div>
+          </div>
+          <div class="form-check mb-3">
+            <%= form.check_box :hide_identifiers, class: 'form-check-input' %>
+            <%= form.label :hide_identifiers, "Hide Identifying Information", class: 'form-check-label' %>
+            <div class="form-text">Useful if you want to help reviewers remain neutral.</div>
+          </div>
+          <%= form.submit "Upload", class: 'btn btn-primary' %>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</div>
