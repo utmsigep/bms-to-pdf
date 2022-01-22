@@ -59,32 +59,32 @@ class CsvUpload
             end
             pdf.stroke_horizontal_rule
             pdf.move_down 10
+            pdf.font_size 10
             y_position = pdf.cursor
             pdf.text_box "<strong>Current or Intended Major/Minor</strong>\n#{row['Current or Intended Major/Minor']}",
                 at: [0, y_position],
-                width: 240,
-                height: 30,
+                width: 280,
+                height: 25,
                 overflow: :shrink_to_fit,
                 inline_format: true
 
             pdf.text_box "<strong>Cumulative HS or College GPA</strong>\n#{row['Cumulative High School or College GPA']}",
-                at: [240, y_position],
-                width: 200,
-                height: 30,
+                at: [280, y_position],
+                width: 160,
+                height: 25,
                 overflow: :shrink_to_fit,
                 inline_format: true
 
             pdf.text_box "<strong>ACT/SAT Score</strong>\n#{row['ACT/SAT Score']}",
                 at: [440, y_position],
                 width: 100,
-                height: 30,
+                height: 25,
                 overflow: :shrink_to_fit,
                 inline_format: true
 
-            pdf.move_down 40
+            pdf.move_down 30
             pdf.stroke_horizontal_rule
             pdf.move_down 10
-            pdf.font_size 10
             pdf.span 540, position: :left do
                 pdf.text "<b>Leadership & Community Involvement</b>", inline_format: true
                 pdf.move_down 10
