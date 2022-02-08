@@ -17,6 +17,11 @@
             <%= form.label :hide_identifiers, "Hide Identifying Information", class: 'form-check-label' %>
             <div class="form-text">Useful if you want to help reviewers remain neutral.</div>
           </div>
+          <div class="form-check mb-3">
+            <%= form.check_box :show_summary, class: 'form-check-input' %>
+            <%= form.label :show_summary, "Include Summary", class: 'form-check-label' %>
+            <div class="form-text">Include a summary of the applications.</div>
+          </div>
           <%= form.submit "Upload", class: 'btn btn-primary' %>
         <% end %>
       </div>

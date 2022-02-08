@@ -35,6 +35,66 @@ class CsvUpload
           })
         pdf.font 'Lato'
 
+        unless @upload_params[:include_summary] == "1"
+            pdf.text "<font size='18'><b>Application Summary<b></font>", inline_format: true
+            pdf.stroke_horizontal_rule
+
+            pdf.move_down 20
+
+            gpas = @table.by_col['Cumulative High School or College GPA'].map! { |g| g.to_f }
+            submission_dates = @table.by_col['Submission Date'].map! { |sd| sd.to_date }
+            gender = {}
+            @table.by_col['Gender Identity'].each do |gi|
+                if gender[gi].nil?
+                    gender[gi] = 0
+                end
+                gender[gi] += 1
+            end
+
+            y_position = pdf.cursor
+            pdf.text_box "<strong>Total Applications</strong><br><font size='16'><b>#{@table.count}</b></font>",
+                at: [0, y_position],
+                width: 180,
+                height: 75,
+                inline_format: true
+
+            pdf.text_box "<strong>Median GPA</strong><br><font size='16'><b>#{self.median(gpas).round(2)}</b></font>",
+                at: [180, y_position],
+                width: 180,
+                height: 75,
+                inline_format: true
+
+            pdf.text_box "<strong>Average GPA</strong><br><font size='16'><b>#{self.average(gpas).round(2)}</b></font>",
+                at: [360, y_position],
+                width: 180,
+                height: 75,
+                inline_format: true
+
+            pdf.move_down 75
+            
+            y_position = pdf.cursor
+            pdf.text_box "<strong>Male Applicants</strong><br><font size='16'><b>#{gender['Man']}</b></font>",
+                at: [0, y_position],
+                width: 180,
+                height: 75,
+                inline_format: true
+
+            pdf.text_box "<strong>Last Submission Date</strong><br><font size='16'><b>#{submission_dates.max.strftime('%-m/%-d/%Y')}</b></font>",
+                at: [180, y_position],
+                width: 180,
+                height: 75,
+                inline_format: true
+
+            pdf.move_down 75
+
+            pdf.stroke_horizontal_rule
+            pdf.move_down 10
+
+            pdf.text "Generated #{Time.new}"
+
+            pdf.start_new_page            
+        end
+
         @table.each_with_index do |row, i|
             pdf.font_size 12
             application_id = i + 1
@@ -114,4 +174,18 @@ class CsvUpload
         pdf.render
     end
 
+    private
+
+    def average(array)
+        return nil if array.empty?
+        array.sum(0.0) / array.length
+    end
+
+    def median(array)
+        return nil if array.empty?
+        sorted = array.sort
+        len = sorted.length
+        (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
+    end
+      
 end
