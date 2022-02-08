@@ -50,6 +50,9 @@ class CsvUpload
                 end
                 gender[gi] += 1
             end
+            if gender['Man'].nil?
+                gender['Man'] = @table.count
+            end
 
             y_position = pdf.cursor
             pdf.text_box "<strong>Total Applications</strong><br><font size='16'><b>#{@table.count}</b></font>",
