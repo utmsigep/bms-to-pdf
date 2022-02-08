@@ -51,7 +51,7 @@ class CsvUpload
                 gender[gi] += 1
             end
             if gender['Man'].nil?
-                gender['Man'] = @table.count
+                gender['Man'] = 'Not Reported'
             end
 
             y_position = pdf.cursor
@@ -74,7 +74,7 @@ class CsvUpload
                 inline_format: true
 
             pdf.move_down 75
-            
+
             y_position = pdf.cursor
             pdf.text_box "<strong>Male Applicants</strong><br><font size='16'><b>#{gender['Man']}</b></font>",
                 at: [0, y_position],
@@ -95,7 +95,7 @@ class CsvUpload
 
             pdf.text "Generated #{Time.new}"
 
-            pdf.start_new_page            
+            pdf.start_new_page
         end
 
         @table.each_with_index do |row, i|
@@ -190,5 +190,5 @@ class CsvUpload
         len = sorted.length
         (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
     end
-      
+
 end
