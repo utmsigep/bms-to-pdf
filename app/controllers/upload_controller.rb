@@ -12,7 +12,7 @@ class UploadController < ApplicationController
   private
 
     def upload_params
-      params.permit(:csv, :hide_identifiers, :show_summary)
+      params.permit(:csv, :hide_identifiers, :show_summary, :authenticity_token, :commit)
     end
 
 end

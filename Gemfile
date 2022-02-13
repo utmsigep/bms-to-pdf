@@ -71,5 +71,5 @@ end
 
 gem 'dotenv-rails', groups: [:development, :test]
 gem "prawn", "~> 2.4"
-
+gem 'prawn-table', "~> 0.1.0"
 gem "prawn-graph", "~> 1.0"

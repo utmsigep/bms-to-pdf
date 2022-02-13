@@ -43,6 +43,7 @@ class CsvUpload
 
             gpas = @table.by_col['Cumulative High School or College GPA'].map! { |g| g.to_f }
             submission_dates = @table.by_col['Submission Date'].map! { |sd| sd.to_date }
+
             gender = {}
             @table.by_col['Gender Identity'].each do |gi|
                 if gender[gi].nil?
@@ -50,45 +51,54 @@ class CsvUpload
                 end
                 gender[gi] += 1
             end
-            if gender['Man'].nil?
-                gender['Man'] = 'Not Reported'
+
+            sources = {}
+            @table.by_col['How did you hear about the Balanced Man Scholarship?'].each do |source|
+                if sources[source].nil?
+                    sources[source] = 0
+                end
+                sources[source] += 1
             end
 
             y_position = pdf.cursor
             pdf.text_box "<strong>Total Applications</strong><br><font size='16'><b>#{@table.count}</b></font>",
                 at: [0, y_position],
                 width: 180,
-                height: 75,
+                height: 50,
                 inline_format: true
 
             pdf.text_box "<strong>Median GPA</strong><br><font size='16'><b>#{self.median(gpas).round(2)}</b></font>",
                 at: [180, y_position],
                 width: 180,
-                height: 75,
+                height: 50,
                 inline_format: true
 
             pdf.text_box "<strong>Average GPA</strong><br><font size='16'><b>#{self.average(gpas).round(2)}</b></font>",
                 at: [360, y_position],
                 width: 180,
-                height: 75,
+                height: 50,
                 inline_format: true
 
-            pdf.move_down 75
+            pdf.move_down 50
 
             y_position = pdf.cursor
-            pdf.text_box "<strong>Male Applicants</strong><br><font size='16'><b>#{gender['Man']}</b></font>",
+            pdf.text_box "<strong>Last Submission Date</strong><br><font size='16'><b>#{submission_dates.max.strftime('%-m/%-d/%Y')}</b></font>",
                 at: [0, y_position],
                 width: 180,
-                height: 75,
+                height: 50,
                 inline_format: true
 
-            pdf.text_box "<strong>Last Submission Date</strong><br><font size='16'><b>#{submission_dates.max.strftime('%-m/%-d/%Y')}</b></font>",
-                at: [180, y_position],
-                width: 180,
-                height: 75,
-                inline_format: true
+            pdf.move_down 50
 
-            pdf.move_down 75
+            pdf.text "<strong>Gender Identity</strong>", inline_format: true
+            pdf.move_down 5
+            pdf.table(gender)
+            pdf.move_down 10
+
+            pdf.text "<strong>Source</strong>", inline_format: true
+            pdf.move_down 5
+            pdf.table(sources)
+            pdf.move_down 10
 
             pdf.stroke_horizontal_rule
             pdf.move_down 10
