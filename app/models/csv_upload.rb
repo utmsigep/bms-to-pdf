@@ -46,6 +46,7 @@ class CsvUpload
 
             gender = {}
             @table.by_col['Gender Identity'].each do |gi|
+                gi = '(Not Set)' if gi.nil?
                 if gender[gi].nil?
                     gender[gi] = 0
                 end
@@ -54,6 +55,7 @@ class CsvUpload
 
             sources = {}
             @table.by_col['How did you hear about the Balanced Man Scholarship?'].each do |source|
+                source = '(Not Set)' if source.nil?
                 if sources[source].nil?
                     sources[source] = 0
                 end
@@ -93,12 +95,12 @@ class CsvUpload
             pdf.text "<strong>Gender Identity</strong>", inline_format: true
             pdf.move_down 5
             pdf.table(gender)
-            pdf.move_down 10
+            pdf.move_down 20
 
             pdf.text "<strong>Source</strong>", inline_format: true
             pdf.move_down 5
             pdf.table(sources)
-            pdf.move_down 10
+            pdf.move_down 20
 
             pdf.stroke_horizontal_rule
             pdf.move_down 10
