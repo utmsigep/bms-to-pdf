@@ -35,7 +35,7 @@ class CsvUpload
           })
         pdf.font 'Lato'
 
-        unless @upload_params[:include_summary] == "1"
+        if @upload_params[:show_summary] == "1"
             pdf.text "<font size='18'><b>Application Summary<b></font>", inline_format: true
             pdf.stroke_horizontal_rule
 
