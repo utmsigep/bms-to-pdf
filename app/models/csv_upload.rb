@@ -30,6 +30,7 @@ class CsvUpload
 
     def to_pdf
         pdf = Prawn::Document.new
+        pdf.font_size 12
         pdf.font_families.update('Lato' => {
             :normal => "#{Rails.root}/app/assets/fonts/Lato-Regular.ttf",
             :italic => "#{Rails.root}/app/assets/fonts/Lato-Italic.ttf",
@@ -37,6 +38,7 @@ class CsvUpload
             :bold_italic => "#{Rails.root}/app/assets/fonts/Lato-BoldItalic.ttf",
           })
         pdf.font 'Lato'
+        pdf.fill_color '000000'
 
         if @upload_params[:show_summary] == "1"
             pdf.text "<font size='18'><b>Application Summary<b></font>", inline_format: true
@@ -65,6 +67,15 @@ class CsvUpload
                 sources[source] += 1
             end
 
+            histogram = {}
+            submission_dates.min.step(submission_dates.max, 1.0).to_a.each do |date|
+                histogram[date.strftime('%Y-%m-%d')] = 0
+            end
+            @table.by_col['Submission Date'].each do |date|
+                date = '(Not Set)' if date.nil?
+                histogram[date] += 1
+            end
+
             y_position = pdf.cursor
             pdf.text_box "<strong>Total Applications</strong><br><font size='16'><b>#{@table.count}</b></font>",
                 at: [0, y_position],
@@ -87,8 +98,14 @@ class CsvUpload
             pdf.move_down 50
 
             y_position = pdf.cursor
-            pdf.text_box "<strong>Last Submission Date</strong><br><font size='16'><b>#{submission_dates.max.strftime('%-m/%-d/%Y')}</b></font>",
+            pdf.text_box "<strong>First Submission</strong><br><font size='16'><b>#{submission_dates.min.strftime('%-m/%-d/%Y')}</b></font>",
                 at: [0, y_position],
+                width: 180,
+                height: 50,
+                inline_format: true
+
+            pdf.text_box "<strong>Last Submission</strong><br><font size='16'><b>#{submission_dates.max.strftime('%-m/%-d/%Y')}</b></font>",
+                at: [180, y_position],
                 width: 180,
                 height: 50,
                 inline_format: true
@@ -105,10 +122,41 @@ class CsvUpload
             pdf.table(sources)
             pdf.move_down 20
 
+            pdf.text "<strong>Submission Trend</strong>", inline_format: true
+            pdf.move_down 85
+            y_position = pdf.cursor
+            max = histogram.values.max
+            bar_width = 520.to_f/histogram.length
+            pdf.fill_color '522e62'
+            pdf.text_box max.to_s, size: 8, width: 20, at: [0, y_position + 75]
+            pdf.text_box "0", size: 8, width: 20, at: [0, y_position + 10]
+            histogram.each_with_index do |element, index|
+                bar_height = ((element[1].to_f/max.to_f) * -75.to_f)
+                pdf.fill_rectangle [(bar_width * index) + 20, y_position], bar_width, bar_height
+            end
+            pdf.fill_color '000000'
+            pdf.move_down 10
+            y_position = pdf.cursor
+            pdf.text_box histogram.keys.min.to_date.strftime('%-m/%-d/%Y'),
+                at: [20, y_position],
+                width: 250,
+                height: 20,
+                size: 8,
+                inline_format: true
+
+            pdf.text_box histogram.keys.max.to_date.strftime('%-m/%-d/%Y'),
+                at: [270, y_position],
+                width: 270,
+                height: 20,
+                size: 8,
+                align: :right
+
+            pdf.move_down 20
+
             pdf.stroke_horizontal_rule
             pdf.move_down 10
 
-            pdf.text "Generated #{Time.new}"
+            pdf.text "<font size='10'><b>File:</b> #{@upload_params[:csv].original_filename}      <b>Generated:</b> #{DateTime.now.in_time_zone('US/Eastern').strftime('%-m/%-d/%Y %-I:%M %p ET')}</font>", inline_format: true
 
             pdf.start_new_page
         end
