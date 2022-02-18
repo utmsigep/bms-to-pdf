@@ -22,6 +22,9 @@ EXPECTED_HEADERS = [
 class CsvUpload
     def initialize(upload_params)
         @upload_params = upload_params
+        if upload_params['csv'].content_type != 'text/csv'
+            raise 'Invalid file format. Must be a CSV.'
+        end
         @table = CSV.parse(File.read(upload_params['csv'].path), headers: true, header_converters: lambda { |h| h.strip })
     end
 
