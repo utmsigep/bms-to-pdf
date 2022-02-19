@@ -113,19 +113,11 @@ class CsvUpload
 
             pdf.move_down 50
 
-            pdf.text "<strong>Gender Identity</strong>", inline_format: true
-            pdf.move_down 5
-            pdf.table(gender)
-            pdf.move_down 20
-
-            pdf.text "<strong>Source</strong>", inline_format: true
-            pdf.move_down 5
-            pdf.table(sources)
-            pdf.move_down 20
-
             pdf.text "<strong>Submission Trend</strong>", inline_format: true
             pdf.move_down 85
             y_position = pdf.cursor
+            pdf.stroke { pdf.line [20, y_position], [540, y_position] }
+            pdf.stroke { pdf.line [20, y_position], [20, y_position + 75] }
             max = histogram.values.max
             bar_width = 520.to_f/histogram.length
             pdf.fill_color '522e62'
@@ -152,6 +144,16 @@ class CsvUpload
                 size: 8,
                 align: :right
 
+            pdf.move_down 20
+
+            pdf.text "<strong>Gender Identity</strong>", inline_format: true
+            pdf.move_down 5
+            pdf.table(gender)
+            pdf.move_down 20
+
+            pdf.text "<strong>Source</strong>", inline_format: true
+            pdf.move_down 5
+            pdf.table(sources)
             pdf.move_down 20
 
             pdf.stroke_horizontal_rule
