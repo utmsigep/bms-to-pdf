@@ -2,35 +2,78 @@
 
 <div class="row">
   <div class="col-md-6 mx-auto">
+    <%= form_with url: upload_convert_path, method: :post, data: {turbo: false, remote: false} do |form| %>
     <div class="card mb-5 shadow">
+      <div class="card-header">
+        Use the form below to take the <acronym title="Comma Separated Values">CSV</acronym> file exported from mySigEp's Balanced Man Scholarship tool to create a <acronym title="Portable Document Format">PDF</acronym> of the applications, one per page.
+      </div>
       <div class="card-body">
-        <p class="mb-3">Use the form below to take the <acronym title="Comma Separated Values">CSV</acronym> file exported from mySigEp's Balanced Man Scholarship tool to create a <acronym title="Portable Document Format">PDF</acronym> of the applications, one per page.</p>
-        <hr />
         <% flash.each do |type, msg| %>
           <div class="alert alert-<%= (type == 'alert') ? 'danger' : 'info' %>"><%= msg %></div>
         <% end %>
-        <%= form_with url: upload_convert_path, method: :post, data: {turbo: false, remote: false} do |form| %>
-          <div class="form-file mb-4">
-            <%= form.label :csv, "CSV Export File", class: 'd-none' %>
-            <%= form.file_field :csv, required: true, class: 'form-control' %>
-            <div class="form-text">Select the exported CSV file from the BMS Tool.</div>
-          </div>
-          <div class="form-check mb-3">
-            <%= form.check_box :show_summary, class: 'form-check-input', checked: true %>
-            <%= form.label :show_summary, "Include Summary", class: 'form-check-label' %>
-            <div class="form-text">Include a summary of the applications.</div>
-          </div>
-          <div class="form-check mb-3">
-            <%= form.check_box :hide_identifiers, class: 'form-check-input' %>
-            <%= form.label :hide_identifiers, "Hide Identifying Information", class: 'form-check-label' %>
-            <div class="form-text">Useful if you want to help reviewers remain neutral.</div>
-          </div>
+        <div class="form-file mb-4">
+          <%= form.label :csv, "CSV Export File", class: 'd-none' %>
+          <%= form.file_field :csv, required: true, class: 'form-control' %>
+          <div class="form-text">Select the exported CSV file from the BMS Tool. <a href="#" data-mdb-toggle="modal" data-mdb-target="#helpModal"><i class="fas fa-question-circle fa-fw"></i> Help</a></div>
+        </div>
+        <div class="form-check mb-3">
+          <%= form.check_box :show_summary, class: 'form-check-input', checked: true %>
+          <%= form.label :show_summary, "Include Summary", class: 'form-check-label' %>
+          <div class="form-text">Include a summary of the applications.</div>
+        </div>
+        <div class="form-check mb-3">
+          <%= form.check_box :hide_identifiers, class: 'form-check-input' %>
+          <%= form.label :hide_identifiers, "Hide Identifying Information", class: 'form-check-label' %>
+          <div class="form-text">Useful if you want to help reviewers remain neutral.</div>
+        </div>
+        <small class="text-muted"><strong>Note:</strong> Submitted data is not recorded or saved.</small>
+      </div>
+      <div class="card-footer">
+        <div class="form-group">
           <%= form.submit "Upload", class: 'btn btn-primary' %>
-        <% end %>
+        </div>
       </div>
     </div>
+    <% end %>
     <div class="text-center text-muted">
-      <small>Made with Virtue, Diligence, and Brotherly Love by <a href="https://utmartin.sigep.org/" target="_blank">UT Martin SigEp</a></small>
+      <small>Made with Virtue, Diligence, and Brotherly Love by <a href="https://utmartin.sigep.org/" target="_blank">UT Martin SigEp</a> &bull; <a href="https://github.com/utmsigep/bms-to-pdf/">Source Code</a></small>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="helpModalLabel">Instructions</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ol class="help-steps">
+          <li class="mb-3">Log into <a href="https://mysigep.org/" target="_blank">mySigEp</a>.</li>
+          <li class="mb-3">Select your Chapter.</li>
+          <li class="mb-3">
+            Click the <strong>BMS Management</strong> tool.
+            <br />
+            <%= image_tag 'steps/step-03.png', class: 'img-fluid' %>
+          </li>
+          <li class="mb-3">
+            Click the <strong>Manage Applications</strong> button.
+            <br />
+            <%= image_tag 'steps/step-04.png', class: 'img-fluid' %>
+          </li>
+          <li class="mb-3">Select the desired BMS Cycle.</li>
+          <li class="mb-3">
+            Click the <strong>Download CSV</strong> button.
+            <br />
+            <%= image_tag 'steps/step-06.png', class: 'img-fluid' %>
+          </li>
+          <li class="mb-3">Upload the CSV file to this site.</li>
+        </ol>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>
