@@ -47,6 +47,7 @@ class CsvUpload
             pdf.move_down 20
 
             gpas = @table.by_col['Cumulative High School or College GPA'].map! { |g| g.to_f }
+            gpas = gpas.reject! { |g| g < 0.0 || g > 5.0 }
             submission_dates = @table.by_col['Submission Date'].map! { |sd| sd.to_date }
 
             gender = {}
