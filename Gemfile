@@ -67,6 +67,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "webdrivers"
+  gem "pdf-inspector", require: "pdf/inspector"
 end
 
 gem 'dotenv-rails', groups: [:development, :test]

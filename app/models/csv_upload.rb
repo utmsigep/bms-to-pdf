@@ -25,9 +25,10 @@ RECORD_COUNT_LIMIT = 1000
 class CsvUpload
     def initialize(upload_params)
         @upload_params = upload_params
-        raise 'Invalid file format. Must be a CSV.' unless upload_params['csv'].content_type == 'text/csv'
-        raise "File is too large. Must be below #{FILE_SIZE_LIMIT_MB} MB." unless upload_params['csv'].size < FILE_SIZE_LIMIT_MB * 125000
-        @table = CSV.parse(File.read(upload_params['csv'].path), headers: true, header_converters: lambda { |h| h.strip })
+        raise 'No file provided.' unless upload_params[:csv]
+        raise 'Invalid file format. Must be a CSV.' unless upload_params[:csv].content_type == 'text/csv'
+        raise "File is too large. Must be below #{FILE_SIZE_LIMIT_MB} MB." unless upload_params[:csv].size < FILE_SIZE_LIMIT_MB * 125000
+        @table = CSV.parse(File.read(upload_params[:csv].path), headers: true, header_converters: lambda { |h| h.strip })
         EXPECTED_HEADERS.each do |header|
             next if ['Gender Identity', 'Self Described Gender Identity'].include? header
             raise "File is missing expected header `#{header}`." unless @table.headers.include? header
