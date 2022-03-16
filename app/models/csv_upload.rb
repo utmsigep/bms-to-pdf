@@ -58,6 +58,17 @@ class CsvUpload
             gpas = gpas.delete_if { |g| g < 0.0 || g > 5.0 }
             submission_dates = @table.by_col['Submission Date'].map! { |sd| sd.to_date }
 
+            duplicates = []
+            names = []
+            emails = []
+            @table.each do |row|
+                if names.include? "#{row['First Name']} #{row['Last Name']}" or emails.include? row['Email'].downcase
+                    duplicates.push ["#{row['First Name']} #{row['Last Name']}", row['Email']]
+                end
+                names.push "#{row['First Name']} #{row['Last Name']}"
+                emails.push row['Email'].downcase
+            end
+
             gender = {}
             @table.by_col['Gender Identity'].each do |gi|
                 gi = '(Not Set)' if gi.nil?
@@ -163,6 +174,13 @@ class CsvUpload
             pdf.move_down 5
             pdf.table(sources)
             pdf.move_down 20
+
+            if duplicates.count > 0
+                pdf.text "<strong><color rgb='FF0000'>Possible Duplicate Applications</color></strong>", inline_format: true
+                pdf.move_down 5
+                pdf.table(duplicates)
+                pdf.move_down 20
+            end
 
             pdf.stroke_horizontal_rule
             pdf.move_down 10
