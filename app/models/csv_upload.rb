@@ -21,6 +21,7 @@ EXPECTED_HEADERS = [
 
 FILE_SIZE_LIMIT_MB = 10
 RECORD_COUNT_LIMIT = 1000
+TAB_CHARACTER = Prawn::Text::NBSP * 4
 
 class CsvUpload
     def initialize(upload_params)
@@ -243,20 +244,20 @@ class CsvUpload
             pdf.span 540, position: :left do
                 pdf.text "<b>Leadership & Community Involvement</b>", inline_format: true
                 pdf.move_down 10
-                pdf.text "#{row['Leadership and Community Involvement']}", align: :justify
+                pdf.text "#{row['Leadership and Community Involvement'].gsub("\t", TAB_CHARACTER)}", align: :justify
                 pdf.move_down 10
                 pdf.text "<b>Honors, Awards and Scholarships</b>", inline_format: true
                 pdf.move_down 10
-                pdf.text "#{row['Honors, Awards and Scholarships']}", align: :justify
+                pdf.text "#{row['Honors, Awards and Scholarships'].gsub("\t", TAB_CHARACTER)}", align: :justify
                 pdf.move_down 10
                 pdf.text "<b>Work Experience</b>", inline_format: true
                 pdf.move_down 10
-                pdf.text "#{row['Work Experience']}", align: :justify
+                pdf.text "#{row['Work Experience'].gsub("\t", TAB_CHARACTER)}", align: :justify
                 pdf.move_down 10
                 (@table.headers - EXPECTED_HEADERS).each do |key|
                     pdf.text "<b>#{key}</b>", inline_format: true
                     pdf.move_down 10
-                    pdf.text "#{row[key]}", align: :justify
+                    pdf.text "#{row[key].gsub("\t", TAB_CHARACTER)}", align: :justify
                     pdf.move_down 10
                 end
                 pdf.move_down 10
