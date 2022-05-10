@@ -45,17 +45,17 @@ class CsvUploadTest < ActionDispatch::IntegrationTest
 
   test "should raise an exception for invalid file" do
     error = assert_raise RuntimeError do
-        params = {}
-        params[:csv] = fixture_file_upload('upload_invalid.csv', 'text/csv')
-        upload = CsvUpload.new(params)
+      params = {}
+      params[:csv] = fixture_file_upload('upload_invalid.csv', 'text/csv')
+      upload = CsvUpload.new(params)
     end
     assert_equal 'File is missing expected header `First Name`.', error.message
   end
 
   test "should raise an exception for no file" do
     error = assert_raise RuntimeError do
-        params = {}
-        upload = CsvUpload.new(params)
+      params = {}
+      upload = CsvUpload.new(params)
     end
     assert_equal 'No file provided.', error.message
   end
