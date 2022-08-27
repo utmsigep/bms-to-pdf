@@ -30,7 +30,7 @@ class CsvUpload
     raise 'Invalid file format. Must be a CSV.' unless upload_params[:csv].content_type == 'text/csv'
     raise "File is too large. Must be below #{FILE_SIZE_LIMIT_MB} MB." unless upload_params[:csv].size < FILE_SIZE_LIMIT_MB * 125000
 
-    @table = CSV.parse(File.read(upload_params[:csv].path), headers: true, header_converters: lambda { |h|
+    @table = CSV.parse(File.read(upload_params[:csv].path), headers: true, liberal_parsing: true, header_converters: lambda { |h|
                                                                                                 h.strip
                                                                                               })
     EXPECTED_HEADERS.each do |header|
