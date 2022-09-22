@@ -5,7 +5,7 @@ class UploadController < ApplicationController
   end
 
   def convert
-    upload = CsvUpload.new(upload_params)
+    upload = SubmittedApplication.new(upload_params)
     send_data upload.to_pdf, filename: upload_params[:csv].original_filename.gsub('.csv', '.pdf'),
                              type: 'application/pdf', disposition: 'download'
   rescue => e

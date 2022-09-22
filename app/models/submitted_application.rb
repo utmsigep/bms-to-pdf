@@ -23,7 +23,7 @@ FILE_SIZE_LIMIT_MB = 10
 RECORD_COUNT_LIMIT = 1000
 TAB_CHARACTER = Prawn::Text::NBSP * 4
 
-class CsvUpload
+class SubmittedApplication
   def initialize(upload_params)
     @upload_params = upload_params
     raise 'No file provided.' unless upload_params[:csv]
@@ -31,8 +31,8 @@ class CsvUpload
     raise "File is too large. Must be below #{FILE_SIZE_LIMIT_MB} MB." unless upload_params[:csv].size < FILE_SIZE_LIMIT_MB * 125000
 
     @table = CSV.parse(File.read(upload_params[:csv].path), headers: true, liberal_parsing: true, header_converters: lambda { |h|
-                                                                                                h.strip
-                                                                                              })
+                                                                                                                       h.strip
+                                                                                                                     })
     EXPECTED_HEADERS.each do |header|
       next if ['Gender Identity', 'Self Described Gender Identity'].include? header
       raise "File is missing expected header `#{header}`." unless @table.headers.include? header
@@ -199,6 +199,7 @@ class CsvUpload
     @table.each_with_index do |row, i|
       pdf.font_size 12
       application_id = i + 1
+      submission_date = Date.parse(row['Submission Date'])
       pdf.text "<font size='9'><b>Application ##{application_id}</b></font>", inline_format: true, align: :right
       pdf.move_down 10
       unless @upload_params[:hide_identifiers] == "1"
@@ -210,12 +211,14 @@ class CsvUpload
                                                                        '(\1) \2-\3')}"
         end
         pdf.bounding_box [400, y_position], width: 140, height: 40, overflow: :shrink_to_fit do
-          begin
-            birth_date = Date.parse(row['Date of Birth']).strftime('%-m/%-d/%Y')
-          rescue
-            birth_date = 'Not Set'
+          unless row['Date of Birth'].empty?
+            birth_date = Date.parse(row['Date of Birth'])
+            age = ((submission_date.to_time - birth_date.to_time) / 1.year.seconds).floor
+            birth_date_and_age = "DOB #{birth_date.strftime('%b %-d, %Y')} (#{age})"
+          else
+            birth_date_and_age = '(DOB not provided.)'
           end
-          pdf.text "D.O.B. #{birth_date}", align: :right
+          pdf.text birth_date_and_age, align: :right
           pdf.text "#{row['Gender Identity']} #{row['Self Described Gender Identity']}", align: :right,
                                                                                          fit_text: true
         end
@@ -271,7 +274,7 @@ class CsvUpload
         pdf.move_down 10
         pdf.stroke_horizontal_rule
         pdf.move_down 10
-        pdf.text "<font size='10'><b>Submitted:</b> #{Date.parse(row['Submission Date']).strftime('%-m/%-d/%Y')}      <b>Source:</b> #{row['How did you hear about the Balanced Man Scholarship?']}</font>",
+        pdf.text "<font size='10'><b>Submitted:</b> #{submission_date.strftime('%-m/%-d/%Y')}      <b>Source:</b> #{row['How did you hear about the Balanced Man Scholarship?']}</font>",
                  inline_format: true
       end
       pdf.start_new_page if i < @table.length - 1

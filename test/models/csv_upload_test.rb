@@ -1,10 +1,10 @@
 require 'test_helper'
 
-class CsvUploadTest < ActionDispatch::IntegrationTest
+class SubmittedApplicationTest < ActionDispatch::IntegrationTest
   test "should render a PDF" do
     params = {}
     params[:csv] = fixture_file_upload('upload.csv', 'text/csv')
-    upload = CsvUpload.new(params)
+    upload = SubmittedApplication.new(params)
     rendered_pdf = upload.to_pdf
     page_analysis = PDF::Inspector::Page.analyze(rendered_pdf)
     assert_equal 2, page_analysis.pages.size
@@ -18,7 +18,7 @@ class CsvUploadTest < ActionDispatch::IntegrationTest
     params = {}
     params[:csv] = fixture_file_upload('upload.csv', 'text/csv')
     params[:show_summary] = "1"
-    upload = CsvUpload.new(params)
+    upload = SubmittedApplication.new(params)
     rendered_pdf = upload.to_pdf
     page_analysis = PDF::Inspector::Page.analyze(rendered_pdf)
     assert_equal 3, page_analysis.pages.size
@@ -33,7 +33,7 @@ class CsvUploadTest < ActionDispatch::IntegrationTest
     params[:csv] = fixture_file_upload('upload.csv', 'text/csv')
     params[:show_summary] = "1"
     params[:hide_identifiers] = "1"
-    upload = CsvUpload.new(params)
+    upload = SubmittedApplication.new(params)
     rendered_pdf = upload.to_pdf
     page_analysis = PDF::Inspector::Page.analyze(rendered_pdf)
     assert_equal 3, page_analysis.pages.size
@@ -47,7 +47,7 @@ class CsvUploadTest < ActionDispatch::IntegrationTest
     error = assert_raise RuntimeError do
       params = {}
       params[:csv] = fixture_file_upload('upload_invalid.csv', 'text/csv')
-      upload = CsvUpload.new(params)
+      upload = SubmittedApplication.new(params)
     end
     assert_equal 'File is missing expected header `First Name`.', error.message
   end
@@ -55,7 +55,7 @@ class CsvUploadTest < ActionDispatch::IntegrationTest
   test "should raise an exception for no file" do
     error = assert_raise RuntimeError do
       params = {}
-      upload = CsvUpload.new(params)
+      upload = SubmittedApplication.new(params)
     end
     assert_equal 'No file provided.', error.message
   end
