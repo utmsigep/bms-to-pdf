@@ -5,41 +5,23 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_ROOT_PASSWORD: rails
-          MYSQL_DATABASE: bms_to_pdf
-        ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     strategy:
-        matrix:
-          ruby-version: ['3.1', '3.2', '3.3']
+      matrix:
+        ruby-version: ['3.2', '3.3', '3.4']
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-
-      - name: Build Assets
-        run: |
-          bin/rails assets:precompile
+          bundler-cache: true
 
       - name: Run Tests
-        env:
-          RAILS_ENV: test
-          DATABASE_URL: mysql2://root:rails@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/bms_to_pdf_test
-        run: |
-          bin/rails db:reset
-          bin/rails test
+        run: bundle exec rake test
