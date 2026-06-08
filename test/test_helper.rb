@@ -1,13 +1,15 @@
-ENV["RAILS_ENV"] ||= "test"
-require_relative "../config/environment"
-require "rails/test_help"
+ENV["RACK_ENV"] = "test"
 
-class ActiveSupport::TestCase
-  # Run tests in parallel with specified workers
-  parallelize(workers: :number_of_processors)
+require "minitest/autorun"
+require "rack/test"
+require "pdf/inspector"
 
-  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-  fixtures :all
+require_relative "../app"
+require_relative "../lib/submitted_application"
 
-  # Add more helper methods to be used by all tests here...
+FIXTURES_DIR = File.expand_path("fixtures/files", __dir__)
+
+def make_csv_upload(filename, type = "text/csv")
+  path = File.join(FIXTURES_DIR, filename)
+  { csv: { filename: filename, type: type, tempfile: File.open(path) } }
 end

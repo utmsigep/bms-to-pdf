@@ -1,0 +1,79 @@
+<h1 class="text-center my-5">BMS to PDF <i class="fas fa-file-csv fa-fw"></i><i class="fas fa-arrow-right fa-fw"></i><i class="fas fa-file-pdf fa-fw"></i></h1>
+
+<div class="row">
+  <div class="col-md-6 mx-auto">
+    <form action="/convert" method="post" enctype="multipart/form-data">
+    <div class="card mb-5 shadow">
+      <div class="card-header">
+        Use the form below to take the <acronym title="Comma Separated Values">CSV</acronym> file exported from mySigEp's Balanced Man Scholarship tool to create a <acronym title="Portable Document Format">PDF</acronym> of the applications, one per page.
+      </div>
+      <div class="card-body">
+        <% if @flash_error %>
+          <div class="alert alert-danger"><%= @flash_error %></div>
+        <% end %>
+        <div class="form-file mb-4">
+          <label for="csv" class="d-none">CSV Export File</label>
+          <input type="file" name="csv" id="csv" required class="form-control" />
+          <div class="form-text">Select the exported CSV file from the BMS Tool. <a href="#" data-mdb-toggle="modal" data-mdb-target="#helpModal"><i class="fas fa-question-circle fa-fw"></i> Help</a></div>
+        </div>
+        <div class="form-check mb-3">
+          <input type="checkbox" name="show_summary" id="show_summary" value="1" checked class="form-check-input" />
+          <label for="show_summary" class="form-check-label">Include Summary</label>
+          <div class="form-text">Include a summary of the applications.</div>
+        </div>
+        <div class="form-check mb-3">
+          <input type="checkbox" name="hide_identifiers" id="hide_identifiers" value="1" class="form-check-input" />
+          <label for="hide_identifiers" class="form-check-label">Hide Identifying Information</label>
+          <div class="form-text">Useful if you want to help reviewers remain neutral.</div>
+        </div>
+        <small class="text-muted"><strong>Note:</strong> Submitted data is not recorded or saved.</small>
+      </div>
+      <div class="card-footer">
+        <div class="form-group">
+          <input type="submit" value="Upload" class="btn btn-primary" />
+        </div>
+      </div>
+    </div>
+    </form>
+    <div class="text-center text-muted">
+      <small>Made with Virtue, Diligence, and Brotherly Love by <a href="https://utmartin.sigep.org/" target="_blank">UT Martin SigEp</a> &bull; <a href="https://github.com/utmsigep/bms-to-pdf/">Source Code</a></small>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="helpModalLabel">Instructions</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ol class="help-steps">
+          <li class="mb-3">Log into <a href="https://mysigep.org/" target="_blank">mySigEp</a>.</li>
+          <li class="mb-3">Select your Chapter.</li>
+          <li class="mb-3">
+            Click the <strong>BMS Management</strong> tool.
+            <br />
+            <img src="/images/steps/step-03.png" class="img-fluid" alt="" />
+          </li>
+          <li class="mb-3">
+            Click the <strong>Manage Applications</strong> button.
+            <br />
+            <img src="/images/steps/step-04.png" class="img-fluid" alt="" />
+          </li>
+          <li class="mb-3">Select the desired BMS Cycle.</li>
+          <li class="mb-3">
+            Click the <strong>Download CSV</strong> button.
+            <br />
+            <img src="/images/steps/step-06.png" class="img-fluid" alt="" />
+          </li>
+          <li class="mb-3">Upload the CSV file to this site.</li>
+        </ol>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
