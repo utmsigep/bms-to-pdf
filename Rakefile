@@ -1,4 +1,6 @@
 require "rake/testtask"
+require "prawn"
+require "prawn/table"
 
 ENV["MT_NO_PLUGINS"] = "1"
 

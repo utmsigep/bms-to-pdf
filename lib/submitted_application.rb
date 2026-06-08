@@ -1,4 +1,12 @@
 require 'csv'
+
+# prawn 2.5.0 has a circular require between font.rb and fonts.rb; suppress it
+module Warning
+  def self.warn(msg, **)
+    super unless msg.include?("prawn") && msg.include?("circular require")
+  end
+end
+
 require 'prawn'
 require 'prawn/table'
 
